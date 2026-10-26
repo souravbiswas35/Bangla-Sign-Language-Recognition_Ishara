@@ -130,6 +130,18 @@ app.add_middleware(
 # REST endpoints
 # ═══════════════════════════════════════════════════════════════════════
 
+@app.get("/")
+async def root():
+    ensure_models_loaded()
+    return {
+        "project": "Bangla Sign Language Recognition (Ishara)",
+        "status": "online",
+        "health": "/health",
+        "docs": "/docs",
+        "models": list(models.keys()),
+        "default_model": default_model_name,
+    }
+
 @app.get("/health")
 async def health():
     ensure_models_loaded()

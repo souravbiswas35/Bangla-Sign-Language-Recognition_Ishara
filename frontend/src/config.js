@@ -1,7 +1,16 @@
 // Centralized configuration for backend API and WebSocket endpoints.
 // Supports both local development (with Vite proxy) and production deployment (Vercel + Render/Railway).
 
-export const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || '').replace(/\/+$/, '');
+const isLocalhost =
+  typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === '0.0.0.0');
+
+export const BACKEND_URL = (
+  import.meta.env.VITE_BACKEND_URL ||
+  (!isLocalhost ? 'https://bangla-sign-backend.onrender.com' : '')
+).replace(/\/+$/, '');
 
 /**
  * Returns the full API URL for a given relative endpoint.
