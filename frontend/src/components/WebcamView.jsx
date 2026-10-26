@@ -53,6 +53,108 @@ function smoothArray(prev, curr, alpha = 0.70) {
   return smoothed;
 }
 
+// ── Dynamic Animated Cyber Constellation Web Background Canvas ──
+function CyberWebCanvas() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animId;
+    const parent = canvas.parentElement;
+    let width = (canvas.width = parent ? parent.clientWidth || 800 : 800);
+    let height = (canvas.height = parent ? parent.clientHeight || 500 : 500);
+
+    const handleResize = () => {
+      if (!canvas || !canvas.parentElement) return;
+      width = canvas.width = canvas.parentElement.clientWidth || 800;
+      height = canvas.height = canvas.parentElement.clientHeight || 500;
+    };
+    window.addEventListener('resize', handleResize);
+
+    const nodeCount = Math.min(46, Math.max(28, Math.floor((width * height) / 8800)));
+    const nodes = [];
+    const colors = ['#818cf8', '#60a5fa', '#a855f7', '#38bdf8', '#c084fc'];
+
+    for (let i = 0; i < nodeCount; i++) {
+      nodes.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.95,
+        vy: (Math.random() - 0.5) * 0.95,
+        r: Math.random() * 2.2 + 1.2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        pulse: Math.random() * Math.PI * 2,
+      });
+    }
+
+    const maxDist = 135;
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw connecting glowing cyber web lines
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < maxDist) {
+            const alpha = (1 - dist / maxDist) * 0.45;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.strokeStyle = `rgba(129, 140, 248, ${alpha})`;
+            ctx.lineWidth = 1.1;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw and update animated particle nodes
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        n.x += n.vx;
+        n.y += n.vy;
+        n.pulse += 0.04;
+
+        if (n.x < 0 || n.x > width) n.vx *= -1;
+        if (n.y < 0 || n.y > height) n.vy *= -1;
+
+        const currentR = n.r + Math.sin(n.pulse) * 0.8;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, Math.max(1, currentR), 0, Math.PI * 2);
+        ctx.fillStyle = n.color;
+        ctx.shadowColor = n.color;
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      animId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="webcam-animated-web-canvas"
+      aria-hidden="true"
+    />
+  );
+}
+
 export default function WebcamView({
   extractKeypoints,
   onGestureComplete,
@@ -604,20 +706,33 @@ export default function WebcamView({
             }}
           />
 
-          {/* ── Smartphone Floating Quick-Flip Glass Button (Minimal 1-Button) ── */}
+          {/* ── Smartphone Floating Quick-Flip Glass Button (Exact Reference Design) ── */}
           <button
             type="button"
             className="floating-camera-flip-btn"
             onClick={() => handleToggleFacingMode()}
-            title={`Flip Camera (Currently on ${facingMode === 'user' ? 'Front' : 'Back'})`}
+            title={`Switch Camera (Currently on ${facingMode === 'user' ? 'Front' : 'Back'})`}
             aria-label="Flip Camera"
           >
             <div className="floating-camera-flip-btn__circle">
-              <IconCameraSwitch size={16} />
+              <IconCamera size={14} />
             </div>
             <span className="floating-camera-flip-btn__label">
-              {facingMode === 'user' ? 'Front' : 'Back'}
+              {facingMode === 'user' ? 'FRONT' : 'BACK'}
             </span>
+            <svg
+              className="floating-camera-flip-btn__chevron"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              width="14"
+              height="14"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                clipRule="evenodd"
+              />
+            </svg>
           </button>
 
           {/* Framing Silhouette Guide Overlay (Aligns user with training dataset distance) */}
@@ -703,26 +818,68 @@ export default function WebcamView({
             />
           )}
 
-          {/* Overlay when Camera is Off */}
+          {/* Overlay when Camera is Off (Animated Cyber Web Backdrop & Concentric Ring) */}
           {!isStreaming && (
             <div className="webcam-overlay">
-              <div className="webcam-overlay__icon">
-                <IconCamera size={36} />
+              {/* Dynamic Living Cyber Constellation Web (60 FPS Animated Canvas) */}
+              <CyberWebCanvas />
+
+              {/* Ambient Center Aura Glow */}
+              <div className="webcam-overlay__aura" />
+
+              {/* Organic Flowing Silk Aurora Waves at the bottom */}
+              <div className="webcam-silk-waves" aria-hidden="true">
+                <svg viewBox="0 0 800 240" preserveAspectRatio="none" className="webcam-waves-svg">
+                  <defs>
+                    <linearGradient id="waveSilkGrad1" x1="0%" y1="100%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#1e1b4b" stopOpacity="0.85" />
+                      <stop offset="50%" stopColor="#2e1065" stopOpacity="0.5" />
+                      <stop offset="100%" stopColor="transparent" stopOpacity="0" />
+                    </linearGradient>
+                    <linearGradient id="waveSilkGrad2" x1="100%" y1="100%" x2="0%" y2="0%">
+                      <stop offset="0%" stopColor="#172554" stopOpacity="0.75" />
+                      <stop offset="60%" stopColor="#312e81" stopOpacity="0.35" />
+                      <stop offset="100%" stopColor="transparent" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    className="web-silk-wave-1"
+                    d="M 0 120 Q 220 50, 440 160 T 800 130 L 800 240 L 0 240 Z"
+                    fill="url(#waveSilkGrad1)"
+                  />
+                  <path
+                    className="web-silk-wave-2"
+                    d="M 0 170 Q 260 100, 520 190 T 800 180 L 800 240 L 0 240 Z"
+                    fill="url(#waveSilkGrad2)"
+                  />
+                </svg>
               </div>
+
+              {/* Concentric Glowing Camera Center Ring */}
+              <div className="webcam-cyber-ring">
+                <div className="webcam-cyber-ring__ripple" />
+                <div className="webcam-cyber-ring__outer" />
+                <div className="webcam-cyber-ring__ticks" />
+                <div className="webcam-cyber-ring__inner">
+                  <IconCamera size={38} className="webcam-cyber-camera-icon" />
+                </div>
+              </div>
+
               <p className="webcam-overlay__text">
                 {mpLoading
                   ? 'Initializing MediaPipe AI models in browser...'
                   : 'Webcam is off. Click below to start live sign recognition.'}
               </p>
+
               <button
-                className="btn btn--primary"
-                onClick={startCamera}
+                type="button"
+                className="webcam-start-btn"
+                onClick={() => startCamera()}
                 disabled={mpLoading}
-                style={{ marginTop: '0.25rem' }}
               >
                 {mpLoading ? (
                   <>
-                    <IconRefresh size={16} className="spinner" />
+                    <IconRefresh size={18} className="spinner" />
                     <span>Loading AI Engine...</span>
                   </>
                 ) : (
@@ -980,7 +1137,7 @@ export default function WebcamView({
         {/* Box 3: Landmark Skeleton, Silhouette Guide & Coordinate Inversion Toggles */}
         <div className="webcam-controls-box webcam-controls-box--toggles">
           <button
-            className={`btn btn--sm ${showSkeleton ? 'btn--secondary' : 'btn--ghost'}`}
+            className={`btn btn--sm ${showSkeleton ? 'btn--primary' : 'btn--ghost'}`}
             onClick={() => setShowSkeleton(!showSkeleton)}
             title="Toggle landmark skeleton overlay"
           >
@@ -989,7 +1146,7 @@ export default function WebcamView({
           </button>
 
           <button
-            className={`btn btn--sm ${showSilhouette ? 'btn--secondary' : 'btn--ghost'}`}
+            className={`btn btn--sm ${showSilhouette ? 'btn--primary' : 'btn--ghost'}`}
             onClick={() => setShowSilhouette(!showSilhouette)}
             title="Toggle dataset distance & silhouette alignment guide"
           >
