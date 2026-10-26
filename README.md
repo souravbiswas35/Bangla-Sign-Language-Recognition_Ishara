@@ -41,7 +41,7 @@
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/souravbiswas35/Bangla-Sign-Language-Recognition_Ishara/main/assets/sign_keypoints_animation.svg?v=3" width="100%" alt="Sign Language Keypoint Skeleton Animation" />
+<img src="./assets/sign_keypoints_animation.svg" width="100%" alt="Sign Language Keypoint Skeleton Animation" />
 
 <br/>
 
