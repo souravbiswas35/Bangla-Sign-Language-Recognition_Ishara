@@ -133,30 +133,11 @@ Operating across **100 authentic Bangla Sign Language (BdSL) vocabulary classes*
 
 The Ishara feature extraction engine transforms uncalibrated 2D webcam video into distance-invariant, scale-normalized 3D spatial feature vectors through a structured three-stage mathematical pipeline.
 
-```text
-========================================================================================
-                 225-D NORMALIZATION MATHEMATICAL PIPELINE ARCHITECTURE
-========================================================================================
+<div align="center">
 
-  [1] MID-SHOULDER CENTER ANCHOR (Translation Invariance):
-      Midpoint = (P11 + P12) / 2
-               = ( [x11 + x12]/2,  [y11 + y12]/2,  [z11 + z12]/2 )
+<img src="./assets/mathematical_formulation.svg" width="100%" alt="225-D Normalization Mathematical Pipeline Architecture" />
 
-  [2] EUCLIDEAN SHOULDER SPAN (Distance & Scale Factor W):
-      W = || P11 - P12 ||2
-        = sqrt[ (x11 - x12)^2 + (y11 - y12)^2 + (z11 - z12)^2 ]
-
-  [3] DISTANCE-INVARIANT LANDMARK NORMALIZATION:
-      L'i = ( Li - Midpoint ) / W
-
-  [4] UNIFIED 225-DIMENSIONAL SPATIAL FEATURE VECTOR:
-      v_t = [ P'_0:32 (99D),  H'_Left (63D),  H'_Right (63D) ]^T  ∈  R^225
-
-  [5] SPATIO-TEMPORAL TENSOR BUFFER (Sliding Window):
-      X   = [ v_{t-29},  v_{t-28},  ...,  v_t ]^T  ∈  R^{Batch × 30 × 225}
-
-========================================================================================
-```
+</div>
 
 ---
 

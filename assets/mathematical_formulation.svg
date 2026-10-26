@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 480" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="mathBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050814" />
+      <stop offset="50%" stop-color="#090f24" />
+      <stop offset="100%" stop-color="#070c1a" />
+    </linearGradient>
+
+    <!-- Glass Card Gradient -->
+    <linearGradient id="mathCardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(30, 41, 59, 0.65)" />
+      <stop offset="100%" stop-color="rgba(15, 23, 42, 0.75)" />
+    </linearGradient>
+
+    <!-- Cyber Blue Accent -->
+    <linearGradient id="neonCyanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#60a5fa" />
+      <stop offset="100%" stop-color="#818cf8" />
+    </linearGradient>
+
+    <!-- Border Glow Filter -->
+    <filter id="mathGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Grid Pattern -->
+    <pattern id="mathGrid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(99, 102, 241, 0.05)" stroke-width="1" />
+    </pattern>
+  </defs>
+
+  <style type="text/css"><![CDATA[
+    .title-text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15px; font-weight: 800; fill: #ffffff; letter-spacing: 0.06em; }
+    .sub-text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 11px; fill: #94a3b8; }
+    .badge-label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 10.5px; font-weight: 700; fill: #38bdf8; letter-spacing: 0.04em; }
+    .step-heading { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12.5px; font-weight: 700; fill: #f8fafc; }
+    .step-desc { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 11px; fill: #94a3b8; }
+    .math-formula { font-family: 'Cambria Math', 'Times New Roman', 'KaTeX_Math', serif; font-size: 16px; font-style: italic; fill: #38bdf8; }
+    .math-sym { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15px; font-style: normal; fill: #e2e8f0; }
+    .math-sub { font-size: 11.5px; }
+    .math-accent { font-weight: 700; fill: #a855f7; }
+    .math-box { rx: 10px; fill: rgba(15, 23, 42, 0.7); stroke: rgba(56, 189, 248, 0.22); stroke-width: 1.2px; }
+    .prop-pill { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 10px; font-weight: 700; fill: #10b981; }
+  ]]></style>
+
+  <!-- 1. Background Surface -->
+  <rect width="940" height="480" rx="14" fill="url(#mathBgGrad)" />
+  <rect width="940" height="480" rx="14" fill="url(#mathGrid)" />
+  <rect width="940" height="480" rx="14" fill="none" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1.5" />
+
+  <!-- 2. Header Bar -->
+  <g transform="translate(30, 24)">
+    <rect x="0" y="0" width="880" height="48" rx="8" fill="rgba(30, 41, 59, 0.55)" stroke="rgba(99, 102, 241, 0.25)" stroke-width="1" />
+    <circle cx="20" cy="24" r="5" fill="#38bdf8" filter="url(#mathGlow)" />
+    <text x="36" y="29" class="title-text">225-D SPATIAL NORMALIZATION: MATHEMATICAL FORMULATION</text>
+    <rect x="670" y="13" width="194" height="22" rx="11" fill="rgba(16, 185, 129, 0.12)" stroke="rgba(16, 185, 129, 0.35)" stroke-width="1" />
+    <text x="767" y="28" text-anchor="middle" class="prop-pill">SCALE &amp; TRANSLATION INVARIANT</text>
+  </g>
+
+  <!-- 3. Step 1: Mid-Shoulder Anchor -->
+  <g transform="translate(30, 84)">
+    <rect x="0" y="0" width="880" height="66" class="math-box" />
+    <rect x="14" y="10" width="60" height="18" rx="4" fill="rgba(56, 189, 248, 0.15)" />
+    <text x="44" y="23" text-anchor="middle" class="badge-label">STEP 1</text>
+    <text x="86" y="24" class="step-heading">Mid-Shoulder Translation Anchor</text>
+    <text x="86" y="42" class="step-desc">Calculates 3D center origin between left shoulder P11 and right shoulder P12 to cancel user translation offset.</text>
+    
+    <!-- Formula -->
+    <g transform="translate(560, 36)">
+      <text class="math-formula">Mid<tspan class="math-sym"> = </tspan><tspan class="math-sym">(</tspan>P<tspan class="math-sub">11</tspan> + P<tspan class="math-sub">12</tspan><tspan class="math-sym">) / 2 = </tspan><tspan class="math-sym">(</tspan><tspan fill="#e2e8f0" font-size="13">x&#772;, y&#772;, z&#772;</tspan><tspan class="math-sym">) &#x2208; &#x211D;&#179;</tspan></text>
+    </g>
+  </g>
+
+  <!-- 4. Step 2: Euclidean Shoulder Span -->
+  <g transform="translate(30, 158)">
+    <rect x="0" y="0" width="880" height="66" class="math-box" />
+    <rect x="14" y="10" width="60" height="18" rx="4" fill="rgba(99, 102, 241, 0.18)" />
+    <text x="44" y="23" text-anchor="middle" class="badge-label" fill="#818cf8">STEP 2</text>
+    <text x="86" y="24" class="step-heading">Euclidean Distance Scale Factor (W)</text>
+    <text x="86" y="42" class="step-desc">Measures anatomical shoulder width to neutralize camera distance, digital zoom, and user body size.</text>
+    
+    <!-- Formula -->
+    <g transform="translate(510, 36)">
+      <text class="math-formula">W<tspan class="math-sym"> = &#x2016;</tspan>P<tspan class="math-sub">11</tspan> - P<tspan class="math-sub">12</tspan><tspan class="math-sym">&#x2016;&#8322; = </tspan><tspan font-family="sans-serif" font-style="normal" font-size="19">&#x221A;</tspan><tspan class="math-sym">[ </tspan>&#916;x&#178; + &#916;y&#178; + &#916;z&#178;<tspan class="math-sym"> ] &gt; 0</tspan></text>
+    </g>
+  </g>
+
+  <!-- 5. Step 3: Coordinate Normalization -->
+  <g transform="translate(30, 232)">
+    <rect x="0" y="0" width="880" height="66" class="math-box" />
+    <rect x="14" y="10" width="60" height="18" rx="4" fill="rgba(168, 85, 247, 0.18)" />
+    <text x="44" y="23" text-anchor="middle" class="badge-label" fill="#c084fc">STEP 3</text>
+    <text x="86" y="24" class="step-heading">Spatial Keypoint Normalization</text>
+    <text x="86" y="42" class="step-desc">Shifts all 75 keypoints (33 Pose + 21 Left Hand + 21 Right Hand) to origin and normalizes by shoulder span W.</text>
+    
+    <!-- Formula -->
+    <g transform="translate(560, 36)">
+      <text class="math-formula">L&#x2032;<tspan class="math-sub">i</tspan><tspan class="math-sym"> = </tspan><tspan class="math-sym">(</tspan>L<tspan class="math-sub">i</tspan> - Mid<tspan class="math-sym">) / </tspan>W<tspan class="math-sym">,  &#x2200; i &#x2208; [0, 74]</tspan></text>
+    </g>
+  </g>
+
+  <!-- 6. Step 4: 225-D Feature Vector -->
+  <g transform="translate(30, 306)">
+    <rect x="0" y="0" width="880" height="66" class="math-box" />
+    <rect x="14" y="10" width="60" height="18" rx="4" fill="rgba(236, 72, 153, 0.18)" />
+    <text x="44" y="23" text-anchor="middle" class="badge-label" fill="#f472b6">STEP 4</text>
+    <text x="86" y="24" class="step-heading">225-D Concatenated Frame Vector (v_t)</text>
+    <text x="86" y="42" class="step-desc">Flattens normalized 3D coordinates into a single 1D temporal frame vector passed across WebSocket stream.</text>
+    
+    <!-- Formula -->
+    <g transform="translate(480, 36)">
+      <text class="math-formula">v<tspan class="math-sub">t</tspan><tspan class="math-sym"> = [ </tspan>P&#x2032;<tspan class="math-sub">0:32</tspan><tspan class="math-sym">, </tspan>H&#x2032;<tspan class="math-sub">L, 0:20</tspan><tspan class="math-sym">, </tspan>H&#x2032;<tspan class="math-sub">R, 0:20</tspan><tspan class="math-sym"> ]&#7488;  &#x2208;  &#x211D;&#178;&#178;&#8309;</tspan></text>
+    </g>
+  </g>
+
+  <!-- 7. Step 5: Sliding Buffer Tensor -->
+  <g transform="translate(30, 380)">
+    <rect x="0" y="0" width="880" height="74" class="math-box" stroke="rgba(16, 185, 129, 0.35)" />
+    <rect x="14" y="10" width="60" height="18" rx="4" fill="rgba(16, 185, 129, 0.18)" />
+    <text x="44" y="23" text-anchor="middle" class="badge-label" fill="#34d399">STEP 5</text>
+    <text x="86" y="24" class="step-heading">Spatio-Temporal Sliding Window Tensor (X)</text>
+    <text x="86" y="42" class="step-desc">A rolling window of T=30 consecutive frames (~1.0s) forms the input tensor evaluated by Vision Transformer.</text>
+    
+    <!-- Formula -->
+    <g transform="translate(460, 42)">
+      <text class="math-formula">X<tspan class="math-sym"> = [ </tspan>v<tspan class="math-sub">t-29</tspan><tspan class="math-sym">,  </tspan>v<tspan class="math-sub">t-28</tspan><tspan class="math-sym">,  ...,  </tspan>v<tspan class="math-sub">t</tspan><tspan class="math-sym"> ]&#7488;  &#x2208;  &#x211D;</tspan><tspan font-size="12">&#185;&#215;&#179;&#8304;&#215;&#178;&#178;&#8309;</tspan></text>
+    </g>
+  </g>
+</svg>
