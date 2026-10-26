@@ -41,7 +41,7 @@
 
 <div align="center">
 
-<img src="assets/sign_keypoints_animation.svg" width="100%" style="border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.6);" alt="Sign Language Keypoint Skeleton Animation" />
+<img src="https://raw.githubusercontent.com/souravbiswas35/Bangla-Sign-Language-Recognition_Ishara/main/assets/sign_keypoints_animation.svg?v=3" width="100%" alt="Sign Language Keypoint Skeleton Animation" />
 
 <br/>
 
@@ -134,28 +134,28 @@ Operating across **100 authentic Bangla Sign Language (BdSL) vocabulary classes*
 The Ishara feature extraction engine transforms uncalibrated 2D webcam video into distance-invariant, scale-normalized 3D spatial feature vectors through a structured three-stage mathematical pipeline.
 
 ```text
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                     225-D NORMALIZATION MATHEMATICAL PIPELINE ARCHITECTURE             │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                        │
-│  1️⃣  MID-SHOULDER CENTER ANCHOR (Translation Invariance):                              │
-│      Midpoint = (P₁₁ + P₁₂) / 2                                                        │
-│               = ( [x₁₁ + x₁₂] / 2,   [y₁₁ + y₁₂] / 2,   [z₁₁ + z₁₂] / 2 )              │
-│                                                                                        │
-│  2️⃣  EUCLIDEAN SHOULDER SPAN (Distance & Scale Factor W):                              │
-│      W = ‖P₁₁ - P₁₂‖₂                                                                  │
-│        = √[ (x₁₁ - x₁₂)² + (y₁₁ - y₁₂)² + (z₁₁ - z₁₂)² ]                              │
-│                                                                                        │
-│  3️⃣  DISTANCE-INVARIANT LANDMARK NORMALIZATION:                                         │
-│      L'ᵢ = ( Lᵢ - Midpoint ) / W                                                       │
-│                                                                                        │
-│  4️⃣  UNIFIED 225-DIMENSIONAL SPATIAL FEATURE VECTOR:                                    │
-│      v_t = [ P'₀:₃₂ (99D),   H'_Left (63D),   H'_Right (63D) ]ᵀ   ∈   ℝ²²⁵             │
-│                                                                                        │
-│  5️⃣  SPATIO-TEMPORAL TENSOR BUFFER (Sliding Window):                                    │
-│      X   = [ v_{t-29},   v_{t-28},   ...,   v_t ]ᵀ   ∈   ℝ^{Batch × 30 × 225}          │
-│                                                                                        │
-└────────────────────────────────────────────────────────────────────────────────────────┘
+========================================================================================
+                 225-D NORMALIZATION MATHEMATICAL PIPELINE ARCHITECTURE
+========================================================================================
+
+  [1] MID-SHOULDER CENTER ANCHOR (Translation Invariance):
+      Midpoint = (P11 + P12) / 2
+               = ( [x11 + x12]/2,  [y11 + y12]/2,  [z11 + z12]/2 )
+
+  [2] EUCLIDEAN SHOULDER SPAN (Distance & Scale Factor W):
+      W = || P11 - P12 ||2
+        = sqrt[ (x11 - x12)^2 + (y11 - y12)^2 + (z11 - z12)^2 ]
+
+  [3] DISTANCE-INVARIANT LANDMARK NORMALIZATION:
+      L'i = ( Li - Midpoint ) / W
+
+  [4] UNIFIED 225-DIMENSIONAL SPATIAL FEATURE VECTOR:
+      v_t = [ P'_0:32 (99D),  H'_Left (63D),  H'_Right (63D) ]^T  ∈  R^225
+
+  [5] SPATIO-TEMPORAL TENSOR BUFFER (Sliding Window):
+      X   = [ v_{t-29},  v_{t-28},  ...,  v_t ]^T  ∈  R^{Batch × 30 × 225}
+
+========================================================================================
 ```
 
 ---
