@@ -24,8 +24,11 @@ from pathlib import Path
 
 import joblib
 import numpy as np
+from urllib.parse import unquote
 from fastapi import FastAPI, File, Form, UploadFile, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from video_processor import process_video_to_sequence
@@ -127,6 +130,38 @@ app.add_middleware(
 
 
 # ═══════════════════════════════════════════════════════════════════════
+# Sign Language Demonstration Videos
+# ═══════════════════════════════════════════════════════════════════════
+ASSETS_VIDEOS_DIR = (Path(__file__).resolve().parent.parent / "assets" / "videos").resolve()
+
+VIDEO_LABEL_TO_FILE: dict[str, str] = {}
+VIDEO_FILE_TO_LABEL: dict[str, str] = {}
+
+if ASSETS_VIDEOS_DIR.exists():
+    for f in sorted(ASSETS_VIDEOS_DIR.iterdir()):
+        if f.is_file():
+            fname = f.name
+            prefix = fname.split(" (")[0].strip()
+            VIDEO_FILE_TO_LABEL[fname] = prefix
+            for action in ACTIONS:
+                if (
+                    prefix.lower() == action.lower()
+                    or fname.lower().startswith(action.lower() + " ")
+                    or fname.lower().startswith(action.lower() + "_")
+                ):
+                    VIDEO_LABEL_TO_FILE[action] = fname
+                    break
+    logger.info("Indexed %d sign language demo videos from %s", len(VIDEO_LABEL_TO_FILE), ASSETS_VIDEOS_DIR)
+
+    # Mount static directory directly as fallback/direct access
+    app.mount(
+        "/assets/videos",
+        StaticFiles(directory=str(ASSETS_VIDEOS_DIR)),
+        name="assets_videos",
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════
 # REST endpoints
 # ═══════════════════════════════════════════════════════════════════════
 
@@ -170,6 +205,55 @@ async def list_models():
 async def reload_endpoint():
     status = reload_models()
     return {"status": "reloaded", **status}
+
+
+@app.get("/api/dictionary-videos")
+async def get_dictionary_videos():
+    """Return all 100 classes with their corresponding video URLs and details."""
+    result = []
+    for action in ACTIONS:
+        fname = VIDEO_LABEL_TO_FILE.get(action)
+        result.append({
+            "label": action,
+            "filename": fname,
+            "video_url": f"/api/videos/{fname}" if fname else None,
+            "has_video": fname is not None,
+        })
+    return {"classes": result, "total": len(result)}
+
+
+@app.get("/api/videos/{video_ref:path}")
+async def get_sign_video(video_ref: str):
+    """
+    Stream sign language demonstration video.
+    video_ref can be the exact filename OR the class label (e.g. 'Dhonnobad').
+    """
+    decoded = unquote(video_ref)
+
+    # 1. Check if it's an exact filename
+    target_path = ASSETS_VIDEOS_DIR / decoded
+    if not target_path.exists() or not target_path.is_file():
+        # 2. Check if it's a class label
+        if decoded in VIDEO_LABEL_TO_FILE:
+            target_path = ASSETS_VIDEOS_DIR / VIDEO_LABEL_TO_FILE[decoded]
+        else:
+            # Case-insensitive label search
+            for label, fname in VIDEO_LABEL_TO_FILE.items():
+                if label.lower() == decoded.lower():
+                    target_path = ASSETS_VIDEOS_DIR / fname
+                    break
+
+    if not target_path.exists() or not target_path.is_file():
+        return JSONResponse(status_code=404, content={"error": f"Video not found for '{decoded}'"})
+
+    suffix = target_path.suffix.lower()
+    media_type = "video/quicktime" if suffix == ".mov" else "video/mp4"
+
+    return FileResponse(
+        path=str(target_path),
+        media_type=media_type,
+        filename=target_path.name,
+    )
 
 
 class PredictSequenceRequest(BaseModel):
