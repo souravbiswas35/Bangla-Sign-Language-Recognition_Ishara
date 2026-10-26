@@ -131,45 +131,82 @@ Operating across **100 authentic Bangla Sign Language (BdSL) vocabulary classes*
 
 ## 📐 Mathematical Formulation: 225-D Feature Pipeline
 
-The Ishara feature extraction engine transforms uncalibrated 2D webcam video into distance-invariant, scale-normalized 3D spatial feature vectors through a structured three-stage mathematical pipeline.
-
-<div align="center">
-
-<img src="./assets/mathematical_formulation.svg" width="100%" alt="225-D Normalization Mathematical Pipeline Architecture" />
-
-</div>
+The Ishara feature extraction engine transforms raw 2D webcam video into distance-invariant, scale-normalized 3D spatial feature vectors through a three-stage mathematical pipeline.
 
 ---
 
-### 📋 Mathematical Pipeline Architecture Matrix
+### 1️⃣ Spatial Landmark Acquisition ($75 \text{ Points} \rightarrow 225\text{-D}$)
 
-| Stage | Operation | Mathematical Formula | Dimensions | Invariance Property |
-|:------|:----------|:---------------------|:----------:|:--------------------|
-| **Step 1** | **Center Anchor** | `Mid = (P₁₁ + P₁₂) / 2` | 3D Point `(x, y, z)` | Translation Invariance (cancels user position offset) |
-| **Step 2** | **Scale Metric** | `W = ‖P₁₁ - P₁₂‖₂ = √[ Σ (Δcoord)² ]` | Scalar Metric `W > 0` | Distance Invariance (cancels webcam zoom/distance) |
-| **Step 3** | **Keypoint Scaling** | `L'ᵢ = (Lᵢ - Mid) / W` | 75 Landmarks $\times 3$ | Scale Invariance (neutralizes body proportion variance) |
-| **Step 4** | **Vector Flattening** | `v_t = [P'₀:₃₂, H'_Left, H'_Right]ᵀ` | **225 Features** | Unified 1D frame vector passed to WebSocket |
-| **Step 5** | **Rolling Buffer** | `X = [v_{t-29}, v_{t-28}, ..., v_t]ᵀ` | **`[1 × 30 × 225]`** | Spatio-temporal tensor evaluated by ViT / RNN |
+For each video frame at discrete time $t$, MediaPipe Holistic Vision extracts spatial coordinate triplets $(x_i, y_i, z_i) \in \mathbb{R}^3$ across 75 anatomical keypoints:
+
+| Landmark Group | Mathematical Set | Point Count | Coordinate Dimension | Description |
+|:---------------|:-----------------|:-----------:|:--------------------:|:------------|
+| 🧍 **Upper Pose** | $P = \{p_0, p_1, \dots, p_{32}\}$ | 33 Keypoints | $33 \times 3 = 99\text{-D}$ | Torso, shoulders, elbows, and wrists |
+| ✋ **Left Hand** | $H_L = \{h^L_0, h^L_1, \dots, h^L_{20}\}$ | 21 Keypoints | $21 \times 3 = 63\text{-D}$ | Full 21-joint articulated hand skeleton |
+| 🤚 **Right Hand** | $H_R = \{h^R_0, h^R_1, \dots, h^R_{20}\}$ | 21 Keypoints | $21 \times 3 = 63\text{-D}$ | Full 21-joint articulated hand skeleton |
+| 📊 **Total Vector** | $\mathbf{u}_t = [P, \; H_L, \; H_R]$ | **75 Keypoints** | **225 Features** | Unnormalized input frame vector |
 
 ---
 
-### 🔍 Detailed Step-by-Step Breakdown
+### 2️⃣ Distance-Invariant Mid-Shoulder Normalization
 
-#### 1️⃣ Spatial Landmark Acquisition ($75 \text{ Points} \rightarrow 225\text{-D}$)
-For each video frame at time $t$, MediaPipe Holistic Vision extracts spatial coordinate triplets $(x_i, y_i, z_i) \in \mathbb{R}^3$ across 75 anatomical keypoints:
-- **Upper Pose ($P$)**: 33 keypoints $\times 3 = 99$ spatial coordinates (torso, shoulders, elbows, wrists)
-- **Left Hand ($H_L$)**: 21 keypoints $\times 3 = 63$ spatial coordinates (full 21-joint articulated hand skeleton)
-- **Right Hand ($H_R$)**: 21 keypoints $\times 3 = 63$ spatial coordinates (full 21-joint articulated hand skeleton)
-- **Total Raw Vector ($\mathbf{u}_t$)**: $99 + 63 + 63 = \mathbf{225\text{ numeric features}}$
+To ensure invariant model inference across varying user distances, heights, and webcam optics, the coordinate system is dynamically anchored and scaled using the human shoulder span.
 
-#### 2️⃣ Distance-Invariant Mid-Shoulder Normalization
-To prevent false classifications when users stand closer or further from their webcam, the coordinate system is dynamically anchored and normalized:
-1. **Midpoint Center**: The midpoint between left shoulder $P_{11}$ and right shoulder $P_{12}$ is calculated as the origin $(0, 0, 0)$.
-2. **Shoulder Span ($W$)**: The Euclidean distance ($L_2$-norm) between $P_{11}$ and $P_{12}$ establishes the scale unit.
-3. **Normalized Landmark ($L'_i$)**: Every landmark coordinate is translated relative to the midpoint and divided by $W$.
+#### 🔹 Step 2.1: Mid-Shoulder Translation Anchor
+Let $P_{11} = (x_{11}, y_{11}, z_{11})$ be the left shoulder coordinate and $P_{12} = (x_{12}, y_{12}, z_{12})$ be the right shoulder coordinate. The 3D midpoint serves as the coordinate origin $(0, 0, 0)$:
 
-#### 3️⃣ Temporal Windowing & Sliding Tensor Assembly
-The normalized frame vector $\mathbf{v}_t \in \mathbb{R}^{225}$ is pushed into a FIFO circular buffer of length $T = 30$ frames ($\approx 1.0\text{ second}$ at $30\text{ FPS}$). The resulting tensor $\mathbf{X} \in \mathbb{R}^{1 \times 30 \times 225}$ is fed into the Vision Transformer self-attention layers for real-time Softmax classification.
+$$
+\text{Mid-Shoulder} = \frac{P_{11} + P_{12}}{2} = \left( \frac{x_{11}+x_{12}}{2}, \; \frac{y_{11}+y_{12}}{2}, \; \frac{z_{11}+z_{12}}{2} \right)
+$$
+
+#### 🔹 Step 2.2: Euclidean Shoulder Span ($W$)
+The scale normalization factor $W$ is the Euclidean distance ($L_2\text{-norm}$) between the shoulders:
+
+$$
+W = \|P_{11} - P_{12}\|_2 = \sqrt{(x_{11}-x_{12})^2 + (y_{11}-y_{12})^2 + (z_{11}-z_{12})^2}
+$$
+
+#### 🔹 Step 2.3: Scale-Invariant Landmark Normalization
+Every spatial landmark coordinate $L_i \in \{P \cup H_L \cup H_R\}$ is translated to the shoulder center and normalized by span $W$:
+
+$$
+L'_i = \frac{L_i - \text{Mid-Shoulder}}{W}, \quad \forall i \in \{0, 1, \dots, 74\}
+$$
+
+---
+
+### 3️⃣ Temporal Windowing & Sliding Tensor Assembly
+
+#### 🔹 Step 3.1: 225-D Spatial Frame Vector
+The normalized coordinates from all 75 keypoints are concatenated into a unified 225-dimensional frame vector $\mathbf{v}_t$:
+
+$$
+\mathbf{v}_t = \left[ P'_{0:32}, \; H'_{L, 0:20}, \; H'_{R, 0:20} \right]^\top \in \mathbb{R}^{225}
+$$
+
+#### 🔹 Step 3.2: 30-Frame Spatio-Temporal Tensor Window
+A sliding temporal window buffer of length $T = 30$ consecutive frames ($\approx 1.0\text{ second}$ at $30\text{ FPS}$) constructs the tensor evaluated by the Vision Transformer:
+
+$$
+\mathbf{X} = \begin{bmatrix} \mathbf{v}_{t-29}^\top \\ \mathbf{v}_{t-28}^\top \\ \vdots \\ \mathbf{v}_t^\top \end{bmatrix} \in \mathbb{R}^{B \times 30 \times 225}
+$$
+
+Where:
+- $B$: Batch size ($B = 1$ during real-time streaming WebSocket inference)
+- $T = 30$: Temporal sequence length (sliding frame window buffer)
+- $D = 225$: Normalized spatial feature dimensionality ($75\text{ landmarks} \times 3\text{ coords}$)
+
+---
+
+### 📋 Mathematical Pipeline Architecture Summary Matrix
+
+| Stage | Mathematical Operation | Formulation | Dimensions | Invariance Property |
+|:------|:-----------------------|:------------|:----------:|:--------------------|
+| **1. Center Anchor** | 3D Midpoint Calculation | $\text{Mid} = \frac{P_{11} + P_{12}}{2}$ | 3D Point $(x, y, z)$ | Translation Invariance (cancels user position offset) |
+| **2. Scale Metric** | Euclidean $L_2\text{-Norm}$ | $W = \|P_{11} - P_{12}\|_2$ | Scalar Metric $W > 0$ | Distance Invariance (cancels webcam zoom/distance) |
+| **3. Keypoint Scaling** | Centered Vector Normalization | $L'_i = \frac{L_i - \text{Mid}}{W}$ | $75\text{ pts} \times 3$ | Scale Invariance (neutralizes body proportion variance) |
+| **4. Vector Flattening** | 1D Spatial Concatenation | $\mathbf{v}_t = [P'^\top, H'^\top_L, H'^\top_R]^\top$ | **225 Features** | Unified 1D frame vector streamed via WebSocket |
+| **5. Rolling Buffer** | Spatio-Temporal Tensor Assembly | $\mathbf{X} = [\mathbf{v}_{t-29}, \dots, \mathbf{v}_t]^\top$ | **`[1 × 30 × 225]`** | Spatio-temporal tensor evaluated by ViT / RNN |
 
 ---
 
