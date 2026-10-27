@@ -2270,6 +2270,459 @@ select option {
   border-top: 1px solid var(--border-subtle);
 }
 
+/* Dictionary 100 Video Available Badge */
+.dictionary-video-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--accent-primary);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: var(--radius-full);
+}
+
+.class-card--clickable {
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.class-card--clickable:hover {
+  border-color: var(--accent-primary);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px -4px rgba(99, 102, 241, 0.18);
+  background: var(--bg-card-hover, var(--bg-card));
+}
+
+.class-card--clickable:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.class-card__roman-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0.25rem 0;
+}
+
+.class-card__video-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  background: rgba(99, 102, 241, 0.08);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  transition: all var(--transition-fast);
+}
+
+.class-card--clickable:hover .class-card__video-indicator {
+  background: var(--accent-primary);
+  color: #ffffff;
+  border-color: var(--accent-primary);
+}
+
+.class-card__watch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.class-card__watch-btn:hover {
+  background: var(--accent-gradient);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Sign Language Video Player Pop-up Modal (SignVideoModal)
+   ═══════════════════════════════════════════════════════════════════════ */
+.sign-video-overlay {
+  z-index: 1100; /* Stacks seamlessly on top of dictionary modal (z-index 1000) */
+  background: rgba(3, 7, 18, 0.84);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sign-video-dialog {
+  max-width: 680px;
+  width: 100%;
+  max-height: 94vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.55), 0 0 40px rgba(99, 102, 241, 0.25);
+  overflow: hidden;
+  animation: modal-pop 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sign-video-dialog__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.1rem 1.4rem 0.9rem;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  gap: 1rem;
+}
+
+.sign-video-dialog__title-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sign-video-dialog__badge-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.sign-video-dialog__counter {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-primary);
+  background: rgba(99, 102, 241, 0.12);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+}
+
+.sign-video-dialog__id {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.sign-video-dialog__names {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.sign-video-dialog__bangla {
+  font-family: var(--font-bengali);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.1;
+  margin: 0;
+}
+
+.sign-video-dialog__roman {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+
+.sign-video-dialog__english {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.sign-video-dialog__speech-btn {
+  padding: 0.3rem !important;
+  border-radius: 50% !important;
+  color: var(--accent-primary) !important;
+  margin-left: 0.25rem;
+}
+
+.sign-video-dialog__close-btn {
+  border-radius: 50% !important;
+  width: 38px;
+  height: 38px;
+  padding: 0 !important;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.sign-video-dialog__close-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-glass-hover);
+}
+
+/* ── Video Stage & Canvas ── */
+.sign-video-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+  min-height: 360px;
+  max-height: 520px;
+  overflow: hidden;
+}
+
+.sign-video-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  max-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+}
+
+.sign-video-element {
+  max-width: 100%;
+  max-height: 520px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.sign-video-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: #ffffff;
+  z-index: 5;
+}
+
+.sign-video-loading-text {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sign-video-error-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  z-index: 6;
+}
+
+.sign-video-play-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #ffffff;
+  z-index: 4;
+  transition: all var(--transition-fast);
+}
+
+.sign-video-play-overlay:hover {
+  background: rgba(0, 0, 0, 0.5);
+  transform: scale(1.05);
+}
+
+/* Prev / Next Nav Buttons */
+.sign-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 8;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.sign-nav-btn:hover {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.sign-nav-btn--prev {
+  left: 12px;
+}
+
+.sign-nav-btn--next {
+  right: 12px;
+}
+
+/* ── Video Control Bar ── */
+.sign-video-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.sign-video-controls__group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sign-video-ctrl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.sign-video-speed-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.speed-pills {
+  display: flex;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+  gap: 2px;
+}
+
+.speed-pill {
+  border: none;
+  background: transparent;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-radius: calc(var(--radius-sm) - 2px);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.speed-pill:hover {
+  color: var(--text-primary);
+}
+
+.speed-pill--active {
+  background: var(--accent-primary);
+  color: #ffffff !important;
+}
+
+/* ── Video Dialog Footer ── */
+.sign-video-dialog__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1.25rem;
+  background: var(--bg-surface);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  gap: 1rem;
+}
+
+.sign-video-file-info {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sign-video-file-name {
+  font-family: var(--font-mono, monospace);
+  color: var(--text-secondary);
+}
+
+.sign-video-hotkeys-hint {
+  white-space: nowrap;
+}
+
+.sign-video-hotkeys-hint kbd {
+  display: inline-block;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.7rem;
+  font-family: var(--font-mono, monospace);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  color: var(--text-primary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 640px) {
+  .sign-video-dialog__names {
+    gap: 0.4rem;
+  }
+  .sign-video-dialog__bangla {
+    font-size: 1.6rem;
+  }
+  .sign-video-stage,
+  .sign-video-wrapper {
+    min-height: 260px;
+    max-height: 360px;
+  }
+  .sign-video-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+  .sign-video-controls__group {
+    justify-content: space-between;
+  }
+  .sign-video-dialog__footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════════════
    Mobile & Laptop Responsiveness (Safe Boxes & Dropdowns)
    ═══════════════════════════════════════════════════════════════════════ */
